@@ -39,11 +39,11 @@ class Smashing_Fields_Plugin {
     	$position = 10;
 
     	acf_add_options_page(array(
-    		'page_title' 	=> $page_title,
-    		'menu_title'	=> $menu_title,
-    		'menu_slug' 	=> $slug,
-    		'capability'	=> $capability,
-    		'icon_url'		=> $icon,
+    		'page_title'    => $page_title,
+    		'menu_title'    => $menu_title,
+    		'menu_slug'     => $slug,
+    		'capability'    => $capability,
+    		'icon_url'      => $icon,
             'position'      => $position
     	));
     }
@@ -105,6 +105,6 @@ class Smashing_Fields_Plugin {
     		));
     	}
     }
-    
+
 }
 new Smashing_Fields_Plugin();
