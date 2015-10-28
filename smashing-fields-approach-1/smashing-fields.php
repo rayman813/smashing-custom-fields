@@ -65,41 +65,87 @@ class Smashing_Fields_Plugin {
     public function setup_fields() {
         $fields = array(
         	array(
-        		'uid' => 'our_first_field',
-        		'label' => 'Awesome Date',
+        		'uid' => 'awesome_text_field',
+        		'label' => 'Sample Text Field',
         		'section' => 'our_first_section',
         		'type' => 'text',
-        		'options' => false,
-        		'placeholder' => 'DD/MM/YYYY',
+        		'placeholder' => 'Some text',
         		'helper' => 'Does this help?',
         		'supplimental' => 'I am underneath!',
-        		'default' => '01/01/2015'
         	),
         	array(
-        		'uid' => 'our_second_field',
-        		'label' => 'Awesome Date',
+        		'uid' => 'awesome_password_field',
+        		'label' => 'Sample Password Field',
+        		'section' => 'our_first_section',
+        		'type' => 'password',
+        	),
+        	array(
+        		'uid' => 'awesome_number_field',
+        		'label' => 'Sample Number Field',
+        		'section' => 'our_first_section',
+        		'type' => 'number',
+        	),
+        	array(
+        		'uid' => 'awesome_textarea',
+        		'label' => 'Sample Text Area',
         		'section' => 'our_first_section',
         		'type' => 'textarea',
-        		'options' => false,
-        		'placeholder' => 'DD/MM/YYYY',
-        		'helper' => 'Does this help?',
-        		'supplimental' => 'I am underneath!',
-        		'default' => '01/01/2015'
         	),
         	array(
-        		'uid' => 'our_third_field',
-        		'label' => 'Awesome Select',
+        		'uid' => 'awesome_select',
+        		'label' => 'Sample Select Dropdown',
         		'section' => 'our_first_section',
         		'type' => 'select',
         		'options' => array(
-        			'yes' => 'Yeppers',
-        			'no' => 'No way dude!',
-        			'maybe' => 'Meh, whatever.'
+        			'option1' => 'Option 1',
+        			'option2' => 'Option 2',
+        			'option3' => 'Option 3',
+        			'option4' => 'Option 4',
+        			'option5' => 'Option 5',
         		),
-        		'placeholder' => 'Text goes here',
-        		'helper' => 'Does this help?',
-        		'supplimental' => 'I am underneath!',
-        		'default' => 'maybe'
+                'default' => array()
+        	),
+        	array(
+        		'uid' => 'awesome_multiselect',
+        		'label' => 'Sample Multi Select',
+        		'section' => 'our_first_section',
+        		'type' => 'multiselect',
+        		'options' => array(
+        			'option1' => 'Option 1',
+        			'option2' => 'Option 2',
+        			'option3' => 'Option 3',
+        			'option4' => 'Option 4',
+        			'option5' => 'Option 5',
+        		),
+                'default' => array()
+        	),
+        	array(
+        		'uid' => 'awesome_radio',
+        		'label' => 'Sample Radio Buttons',
+        		'section' => 'our_first_section',
+        		'type' => 'radio',
+        		'options' => array(
+        			'option1' => 'Option 1',
+        			'option2' => 'Option 2',
+        			'option3' => 'Option 3',
+        			'option4' => 'Option 4',
+        			'option5' => 'Option 5',
+        		),
+                'default' => array()
+        	),
+        	array(
+        		'uid' => 'awesome_checkboxes',
+        		'label' => 'Sample Checkboxes',
+        		'section' => 'our_first_section',
+        		'type' => 'checkbox',
+        		'options' => array(
+        			'option1' => 'Option 1',
+        			'option2' => 'Option 2',
+        			'option3' => 'Option 3',
+        			'option4' => 'Option 4',
+        			'option5' => 'Option 5',
+        		),
+                'default' => array()
         	)
         );
     	foreach( $fields as $field ){
@@ -112,24 +158,44 @@ class Smashing_Fields_Plugin {
     public function field_callback( $arguments ) {
 
         $value = get_option( $arguments['uid'] );
+
         if( ! $value ) {
             $value = $arguments['default'];
         }
 
         switch( $arguments['type'] ){
             case 'text':
+            case 'password':
+            case 'number':
                 printf( '<input name="%1$s" id="%1$s" type="%2$s" placeholder="%3$s" value="%4$s" />', $arguments['uid'], $arguments['type'], $arguments['placeholder'], $value );
                 break;
             case 'textarea':
                 printf( '<textarea name="%1$s" id="%1$s" placeholder="%2$s" rows="5" cols="50">%3$s</textarea>', $arguments['uid'], $arguments['placeholder'], $value );
                 break;
             case 'select':
+            case 'multiselect':
                 if( ! empty ( $arguments['options'] ) && is_array( $arguments['options'] ) ){
+                    $attributes = '';
                     $options_markup = '';
                     foreach( $arguments['options'] as $key => $label ){
-                        $options_markup .= sprintf( '<option value="%s" %s>%s</option>', $key, selected( $value, $key, false ), $label );
+                        $options_markup .= sprintf( '<option value="%s" %s>%s</option>', $key, selected( $value[ array_search( $key, $value, true ) ], $key, false ), $label );
                     }
-                    printf( '<select name="%1$s" id="%1$s">%2$s</select>', $arguments['uid'], $options_markup );
+                    if( $arguments['type'] === 'multiselect' ){
+                        $attributes = ' multiple="multiple" ';
+                    }
+                    printf( '<select name="%1$s[]" id="%1$s" %2$s>%3$s</select>', $arguments['uid'], $attributes, $options_markup );
+                }
+                break;
+            case 'radio':
+            case 'checkbox':
+                if( ! empty ( $arguments['options'] ) && is_array( $arguments['options'] ) ){
+                    $options_markup = '';
+                    $iterator = 0;
+                    foreach( $arguments['options'] as $key => $label ){
+                        $iterator++;
+                        $options_markup .= sprintf( '<label for="%1$s_%6$s"><input id="%1$s_%6$s" name="%1$s[]" type="%2$s" value="%3$s" %4$s /> %5$s</label><br/>', $arguments['uid'], $arguments['type'], $key, checked( $value[ array_search( $key, $value, true ) ], $key, false ), $label, $iterator );
+                    }
+                    printf( '<fieldset>%s</fieldset>', $options_markup );
                 }
                 break;
         }
