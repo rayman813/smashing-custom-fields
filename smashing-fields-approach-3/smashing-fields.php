@@ -36,7 +36,7 @@ class Smashing_Fields_Plugin {
     	$capability = 'manage_options';
     	$slug = 'smashing_fields';
     	$icon = 'dashicons-admin-plugins';
-    	$position = 10;
+    	$position = 100;
 
     	acf_add_options_page(array(
     		'page_title'    => $page_title,

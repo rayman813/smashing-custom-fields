@@ -24,7 +24,7 @@ class Smashing_Fields_Plugin {
     	$slug = 'smashing_fields';
     	$callback = array( $this, 'plugin_settings_page_content' );
     	$icon = 'dashicons-admin-plugins';
-    	$position = 10;
+    	$position = 100;
 
     	add_menu_page( $page_title, $menu_title, $capability, $slug, $callback, $icon, $position );
     }
