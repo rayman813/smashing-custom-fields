@@ -9,7 +9,8 @@ class Smashing_Fields_Plugin {
 
     public function __construct() {
         // Hook into the admin menu
-    	add_action( 'plugins_loaded', array( $this, 'create_plugin_settings_page' ) );
+        add_action( 'admin_menu', array( $this, 'create_plugin_settings_page' ) );
+        add_action( 'admin_init', array( $this, 'add_acf_variables' ) );
 
         add_filter( 'acf/settings/path', array( $this, 'update_acf_settings_path' ) );
         add_filter( 'acf/settings/dir', array( $this, 'update_acf_settings_dir' ) );
@@ -30,23 +31,37 @@ class Smashing_Fields_Plugin {
     }
 
     public function create_plugin_settings_page() {
-        // Add the menu item and page
+    	// Add the menu item and page
     	$page_title = 'My Awesome Settings Page';
     	$menu_title = 'Awesome Plugin';
     	$capability = 'manage_options';
     	$slug = 'smashing_fields';
+    	$callback = array( $this, 'plugin_settings_page_content' );
     	$icon = 'dashicons-admin-plugins';
     	$position = 100;
 
-    	acf_add_options_page(array(
-    		'page_title'    => $page_title,
-    		'menu_title'    => $menu_title,
-    		'menu_slug'     => $slug,
-    		'capability'    => $capability,
-    		'icon_url'      => $icon,
-            'position'      => $position
-    	));
+    	add_menu_page( $page_title, $menu_title, $capability, $slug, $callback, $icon, $position );
     }
+
+    public function plugin_settings_page_content() {
+        do_action('acf/input/admin_head');
+        do_action('acf/input/admin_enqueue_scripts');
+
+        $options = array(
+        	'id' => 'acf-form',
+        	'post_id' => 'options',
+        	'new_post' => false,
+        	'field_groups' => array( 'acf_awesome-options' ),
+        	'return' => admin_url('admin.php?page=smashing_fields'),
+        	'submit_value' => 'Update',
+        );
+        acf_form( $options );
+    }
+
+    public function add_acf_variables() {
+        acf_form_head();
+    }
+
     public function setup_options() {
 
     	if( function_exists( 'register_field_group' ) ) {
