@@ -29,9 +29,12 @@ class Smashing_Fields_Plugin {
     	add_menu_page( $page_title, $menu_title, $capability, $slug, $callback, $icon, $position );
     }
 
-    public function plugin_settings_page_content() { ?>
+    public function plugin_settings_page_content() {?>
     	<div class="wrap">
-    		<h2>My Awesome Settings Page</h2>
+    		<h2>My Awesome Settings Page</h2><?php
+            if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] ){
+                  $this->admin_notice();
+            } ?>
     		<form method="POST" action="options.php">
                 <?php
                     settings_fields( 'smashing_fields' );
@@ -40,6 +43,12 @@ class Smashing_Fields_Plugin {
                 ?>
     		</form>
     	</div> <?php
+    }
+    
+    public function admin_notice() { ?>
+        <div class="notice notice-success is-dismissible">
+            <p>Your settings have been updated!</p>
+        </div><?php
     }
 
     public function setup_sections() {
