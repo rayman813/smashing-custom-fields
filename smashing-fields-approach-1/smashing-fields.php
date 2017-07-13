@@ -213,8 +213,8 @@ class Smashing_Fields_Plugin {
             printf( '<span class="helper"> %s</span>', $helper );
         }
 
-        if( $supplimental = $arguments['supplimental'] ){
-            printf( '<p class="description">%s</p>', $supplimental );
+        if( $supplemental = $arguments['supplemental'] ){
+            printf( '<p class="description">%s</p>', $supplemental );
         }
 
     }
